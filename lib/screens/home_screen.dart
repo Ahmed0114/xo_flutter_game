@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import '../page.dart';
 import '../widgets/xo_board.dart';
 import '../utils/cell_value.dart';
 import '../controllers/game_controller.dart';
@@ -8,6 +8,8 @@ import '../controllers/board_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+  static const String routename='home';
+
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -16,6 +18,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final BoardController boardController;
   late final GameController gameController;
+  int score1= 0;
+
+
 
   @override
   void initState() {
@@ -23,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     boardController = BoardController();
     gameController = GameController(
       boardController: boardController,
+
     );
 
     SystemChrome.setSystemUIOverlayStyle(
@@ -40,9 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
     SystemChrome.restoreSystemUIOverlays();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
+    HomeScreenArguments Arguments= ModalRoute.of(context)?.settings.arguments as HomeScreenArguments;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -50,13 +56,26 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              Text('Score',style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+              SizedBox(height: 18,),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+
+                Text('${Arguments.player1}: X ',style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+                Text('${Arguments.player2}: O ',style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+
+              ],),
               const Text(
+
                 'Click a cell when it\'s your move.',
                 style: TextStyle(fontSize: 18.0),
               ),
               AnimatedBuilder(
                 animation: gameController,
                 builder: (context, _) {
+
                   if (gameController.isDraw) {
                     return const Text(
                       'Draw!',
@@ -66,13 +85,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     );
                   } else if (gameController.hasWinner) {
-                    return Text(
-                      'Winner is ${mapCellValueToString(gameController.winner)}',
-                      style: const TextStyle(
-                        fontSize: 32.0,
-                        color: Colors.green,
-                      ),
-                    );
+                    score1++;
+                    return
+                      Text(
+                        'Winner is ${mapCellValueToString(gameController.winner)}',
+                        style: const TextStyle(
+                          fontSize: 32.0,
+                          color: Colors.green,
+                        ),
+                      );
+
+
+
                   } else {
                     return Text(
                       'Player ${gameController.currentPlayerString}\'s turn.',
@@ -81,9 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: gameController.currentPlayerColor,
                       ),
                     );
+
                   }
                 },
               ),
+
               XOBoard(
                 controller: boardController,
                 onCellTap: gameController.onCellTap,
@@ -93,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 48,
                 child: ElevatedButton(
                   child: const Text(
-                    'AI Play',
+                    'computer  Play',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -107,11 +133,12 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 width: double.infinity,
                 height: 48,
-                child: ElevatedButton(
+                child: FlatButton(
+                  color: Colors.red,
                   child: const Text(
-                    'RESTART GAME',
+                    'Play again',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 20,color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

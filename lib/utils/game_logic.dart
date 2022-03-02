@@ -1,6 +1,6 @@
 import 'cell_value.dart';
 
-const List<List<int>> kXORules = [
+ List<List<int>> kXORules = [
   // horizontal
   [0, 1, 2],
   [3, 4, 5],
@@ -13,7 +13,6 @@ const List<List<int>> kXORules = [
   [0, 4, 8],
   [2, 4, 6],
 ];
-
 CellValue checkWinner(List<CellValue> board) {
   for (List<int> rule in kXORules) {
     final List<CellValue> pickedItems = pickItems(board, rule);
@@ -83,6 +82,7 @@ int minMaxAi(
     final CellValue winner = checkWinner(newBoard);
 
     if (winner == winPlayer) {
+
       return 10;
     } else if (winner == lossPlayer) {
       return -10;
